@@ -9,18 +9,23 @@ import eu.crushedpixel.sponge.packetgate.api.registry.PacketConnection;
 import eu.crushedpixel.sponge.packetgate.api.registry.PacketGate;
 import lombok.Getter;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.IAttribute;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.Packet;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.EntityDataManager.DataEntry;
 import net.minecraft.network.play.server.SPacketDestroyEntities;
 import net.minecraft.network.play.server.SPacketEntityMetadata;
+import net.minecraft.network.play.server.SPacketEntityProperties;
 import net.minecraft.network.play.server.SPacketSpawnPlayer;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.world.Location;
 
 import java.lang.reflect.Field;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -46,16 +51,18 @@ public abstract class Masquerade<E extends Entity> extends PacketListenerAdapter
     // the fake entity uuid
     protected final UUID entityUUID = UUID.randomUUID();
 
-    protected final Class<? extends E> entityClass;
+    private final Class<? extends E> entityClass;
 
-    private final Set<DataParameter<?>> dataKeys;
+    private final Set<DataParameter<?>> validDataKeys;
+    private final Set<IAttribute> validAttributes;
 
     public Masquerade(Player player, Class<? extends E> entityClass) {
         this.playerUUID = player.getUniqueId();
         this.entityID = ((EntityPlayer) player).getEntityId();
         this.entityClass = entityClass;
         this.packetGate = Sponge.getServiceManager().provide(PacketGate.class).get();
-        this.dataKeys = findDataKeys(entityClass);
+        this.validDataKeys = findDataKeys(entityClass);
+        this.validAttributes = registerAttributes(entityClass);
     }
 
     /**
@@ -129,6 +136,25 @@ public abstract class Masquerade<E extends Entity> extends PacketListenerAdapter
             }
         }
         return dataKeys;
+    }
+
+    // override this to allow for more attributes for specific masquerades
+    protected Set<IAttribute> registerAttributes(Class<? extends Entity> entityClass) {
+        if (!EntityLivingBase.class.isAssignableFrom(entityClass)) {
+            return Collections.emptySet();
+        }
+
+        Set<IAttribute> attributes = new HashSet<>();
+
+        // these attributes are registered for all entity classes extending EntityLivingBase,
+        // so they are safe to transmit
+        attributes.add(SharedMonsterAttributes.MAX_HEALTH);
+        attributes.add(SharedMonsterAttributes.KNOCKBACK_RESISTANCE);
+        attributes.add(SharedMonsterAttributes.MOVEMENT_SPEED);
+        attributes.add(SharedMonsterAttributes.ARMOR);
+        attributes.add(SharedMonsterAttributes.ARMOR_TOUGHNESS);
+
+        return attributes;
     }
 
     private void registerListeners() {
@@ -211,7 +237,7 @@ public abstract class Masquerade<E extends Entity> extends PacketListenerAdapter
                 DataEntry dataEntry = it.next();
 
                 boolean valid = false;
-                for (DataParameter<?> key : dataKeys) {
+                for (DataParameter<?> key : validDataKeys) {
                     if (key == dataEntry.getKey()) {
                         valid = true;
                         break;
@@ -224,6 +250,41 @@ public abstract class Masquerade<E extends Entity> extends PacketListenerAdapter
             }
 
             if (packetEntityMetadata.dataManagerEntries.isEmpty()) {
+                packetEvent.setCancelled(true);
+            }
+        }
+
+        if (packet instanceof SPacketEntityProperties) {
+            SPacketEntityProperties packetEntityProperties = (SPacketEntityProperties) packet;
+            if (packetEntityProperties.entityId != this.entityID) return;
+
+            // property packets are only accepted by the client for living entities
+            if (!EntityLivingBase.class.isAssignableFrom(entityClass)) {
+                packetEvent.setCancelled(true);
+            }
+
+            // player entities have attributes that other entity types may not have, for example luck.
+            // remove all attributes that are not registered for the masquerade's entity type.
+
+            Iterator<SPacketEntityProperties.Snapshot> it = packetEntityProperties.snapshots.iterator();
+
+            while (it.hasNext()) {
+                SPacketEntityProperties.Snapshot snapshot = it.next();
+
+                boolean valid = false;
+                for (IAttribute attribute : validAttributes) {
+                    if (snapshot.getName().equals(attribute.getName())) {
+                        valid = true;
+                        break;
+                    }
+                }
+
+                if (!valid) {
+                    it.remove();
+                }
+            }
+
+            if (packetEntityProperties.snapshots.isEmpty()) {
                 packetEvent.setCancelled(true);
             }
         }
