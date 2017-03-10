@@ -2,11 +2,13 @@ package eu.crushedpixel.sponge.masquerade.masquerades;
 
 import com.flowpowered.math.vector.Vector3d;
 import com.google.common.base.Preconditions;
+import eu.crushedpixel.sponge.masquerade.manipulators.EntityDataManipulator;
 import eu.crushedpixel.sponge.masquerade.utils.ReflectionUtils;
 import eu.crushedpixel.sponge.packetgate.api.event.PacketEvent;
 import eu.crushedpixel.sponge.packetgate.api.listener.PacketListenerAdapter;
 import eu.crushedpixel.sponge.packetgate.api.registry.PacketConnection;
 import eu.crushedpixel.sponge.packetgate.api.registry.PacketGate;
+import io.netty.util.internal.ConcurrentSet;
 import lombok.Getter;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -36,16 +38,17 @@ import java.util.UUID;
 import static eu.crushedpixel.sponge.masquerade.utils.PacketMath.rotationToByte;
 import static eu.crushedpixel.sponge.masquerade.utils.PacketMath.velocityToShort;
 
-public abstract class Masquerade<E extends Entity> extends PacketListenerAdapter {
+public abstract class Masquerade<E extends Entity, D extends EntityDataManipulator> extends PacketListenerAdapter {
 
     @Getter
     private final UUID playerUUID;
 
     private final PacketGate packetGate;
 
-    private final Set<PacketConnection> deceived = new HashSet<>();
+    private final Set<PacketConnection> deceived = new ConcurrentSet<>();
 
     // the player's entity ID
+    @Getter
     protected int entityID;
 
     // the fake entity uuid
@@ -56,6 +59,9 @@ public abstract class Masquerade<E extends Entity> extends PacketListenerAdapter
     private final Set<DataParameter<?>> validDataKeys;
     private final Set<IAttribute> validAttributes;
 
+    @Getter
+    private D dataManipulator;
+
     public Masquerade(Player player, Class<? extends E> entityClass) {
         this.playerUUID = player.getUniqueId();
         this.entityID = ((EntityPlayer) player).getEntityId();
@@ -63,7 +69,10 @@ public abstract class Masquerade<E extends Entity> extends PacketListenerAdapter
         this.packetGate = Sponge.getServiceManager().provide(PacketGate.class).get();
         this.validDataKeys = findDataKeys(entityClass);
         this.validAttributes = registerAttributes(entityClass);
+        this.dataManipulator = createDataManipulator();
     }
+
+    protected abstract D createDataManipulator();
 
     /**
      * Shows this Masquerade to the specified player.
@@ -105,6 +114,9 @@ public abstract class Masquerade<E extends Entity> extends PacketListenerAdapter
         if (deceived.isEmpty()) {
             registerListeners();
         }
+
+        // send all entity metadata
+        sendEntityData(connection);
 
         deceived.add(connection);
     }
@@ -196,8 +208,19 @@ public abstract class Masquerade<E extends Entity> extends PacketListenerAdapter
         sendPackets(packets, connection);
     }
 
+    private void sendEntityData(PacketConnection connection) {
+        SPacketEntityMetadata packetEntityMetadata = new SPacketEntityMetadata();
+        packetEntityMetadata.entityId = this.entityID;
+        packetEntityMetadata.dataManagerEntries = dataManipulator.getAllEntries();
+        connection.sendPacket(packetEntityMetadata);
+    }
+
     protected void sendPackets(List<Packet> packets, PacketConnection connection) {
         packets.forEach(packet -> connection.sendPacket(packet));
+    }
+
+    public void sendToAll(Packet packet) {
+        deceived.forEach(connection -> connection.sendPacket(packet));
     }
 
     @Override
@@ -231,7 +254,7 @@ public abstract class Masquerade<E extends Entity> extends PacketListenerAdapter
             SPacketEntityMetadata packetEntityMetadata = (SPacketEntityMetadata) packet;
             if (packetEntityMetadata.entityId != this.entityID) return;
 
-            // use reflection to check if the data keys are valid for the fake entity's type
+            // use reflection to check if the manipulators keys are valid for the fake entity's type
             Iterator<DataEntry<?>> it = packetEntityMetadata.dataManagerEntries.iterator();
             while (it.hasNext()) {
                 DataEntry dataEntry = it.next();

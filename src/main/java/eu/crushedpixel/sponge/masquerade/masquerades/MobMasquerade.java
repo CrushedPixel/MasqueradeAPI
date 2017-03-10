@@ -1,5 +1,6 @@
 package eu.crushedpixel.sponge.masquerade.masquerades;
 
+import eu.crushedpixel.sponge.masquerade.manipulators.EntityDataManipulator;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.network.Packet;
@@ -10,12 +11,12 @@ import org.spongepowered.api.entity.living.player.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MobMasquerade<E extends EntityLivingBase> extends Masquerade<E> {
+public abstract class MobMasquerade<E extends EntityLivingBase, D extends EntityDataManipulator> extends Masquerade<E, D> {
 
     // the entity type
     protected final int entityType;
 
-    public MobMasquerade(Player player, Class<? extends E> entityClass) {
+    public MobMasquerade(Player player, Class<E> entityClass) {
         super(player, entityClass);
 
         Integer entityType = EntityList.CLASS_TO_ID.get(entityClass);

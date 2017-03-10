@@ -1,5 +1,6 @@
 package eu.crushedpixel.sponge.masquerade.masquerades;
 
+import eu.crushedpixel.sponge.masquerade.manipulators.EntityDataManipulator;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.SPacketSpawnObject;
@@ -8,7 +9,7 @@ import org.spongepowered.api.entity.living.player.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ObjectMasquerade<E extends Entity> extends Masquerade<E> {
+public abstract class ObjectMasquerade<E extends Entity> extends Masquerade<E, EntityDataManipulator> {
 
     // the object type
     private final int objectType;
@@ -16,6 +17,7 @@ public class ObjectMasquerade<E extends Entity> extends Masquerade<E> {
     public ObjectMasquerade(Player player, Class<? extends E> entityClass) {
         super(player, entityClass);
         this.objectType = 0;
+        // TODO set objectType in implementations
     }
 
     @Override
