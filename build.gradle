@@ -14,7 +14,11 @@ buildscript {
 plugins {
     id 'org.spongepowered.plugin' version '0.8.1'
     id 'net.minecrell.vanillagradle.server' version '2.2-5'
+    id 'maven'
 }
+
+group = 'eu.crushedpixel.sponge'
+version = '0.1-SNAPSHOT'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -36,4 +40,8 @@ minecraft {
 
 jar {
     manifest.attributes('FMLAT': 'masquerade_at.cfg')
+}
+
+install {
+    dependsOn ':reobfJar'
 }
