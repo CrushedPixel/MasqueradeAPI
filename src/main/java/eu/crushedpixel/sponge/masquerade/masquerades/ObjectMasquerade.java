@@ -14,10 +14,22 @@ public abstract class ObjectMasquerade<E extends Entity> extends Masquerade<E, E
     // the object type
     private final int objectType;
 
-    public ObjectMasquerade(Player player, Class<? extends E> entityClass) {
+    // object data, for example Minecart type
+    private final int objectData;
+
+    protected ObjectMasquerade(Player player, Class<? extends E> entityClass, int objectType) {
+        this(player, entityClass, objectType, 0);
+    }
+
+    protected ObjectMasquerade(Player player, Class<? extends E> entityClass, int objectType, int objectData) {
         super(player, entityClass);
-        this.objectType = 0;
-        // TODO set objectType in implementations
+        this.objectType = objectType;
+        this.objectData = objectData;
+    }
+
+    @Override
+    protected EntityDataManipulator<E> createDataManipulator() {
+        return new EntityDataManipulator<>(this);
     }
 
     @Override
@@ -30,6 +42,7 @@ public abstract class ObjectMasquerade<E extends Entity> extends Masquerade<E, E
         packetSpawnObject.entityId = this.entityID;
         packetSpawnObject.uniqueId = this.entityUUID;
         packetSpawnObject.type = this.objectType;
+        packetSpawnObject.data = this.objectData;
         packetSpawnObject.x = posX;
         packetSpawnObject.y = posY;
         packetSpawnObject.z = posZ;

@@ -1,7 +1,8 @@
 package eu.crushedpixel.sponge.masquerade.plugin;
 
-import eu.crushedpixel.sponge.masquerade.manipulators.SnowmanDataManipulator;
-import eu.crushedpixel.sponge.masquerade.masquerades.impl.SnowmanMasquerade;
+import eu.crushedpixel.sponge.masquerade.manipulators.EntityDataManipulator;
+import eu.crushedpixel.sponge.masquerade.masquerades.Masquerade;
+import eu.crushedpixel.sponge.masquerade.masquerades.impl.MinecartMasquerade;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.spec.CommandSpec;
@@ -21,7 +22,7 @@ public class MasqueradePlugin {
 
     public static final String ID = "masquerade";
 
-    private Map<UUID, SnowmanMasquerade> masquerades = new ConcurrentHashMap<>();
+    private Map<UUID, Masquerade<?, ? extends EntityDataManipulator<?>>> masquerades = new ConcurrentHashMap<>();
 
     @Listener
     public void onInit(GameInitializationEvent event) {
@@ -36,7 +37,7 @@ public class MasqueradePlugin {
                         return CommandResult.empty();
                     }
 
-                    SnowmanMasquerade masquerade = new SnowmanMasquerade((Player) source);
+                    MinecartMasquerade masquerade = new MinecartMasquerade((Player) source, MinecartMasquerade.MinecartType.TNT);
                     Sponge.getServer().getOnlinePlayers().forEach(player -> {
                                 if (player.getUniqueId().equals(((Player) source).getUniqueId())) return;
                                 masquerade.maskTo(player);
@@ -66,23 +67,6 @@ public class MasqueradePlugin {
                 }).build(), "unmask");
 
         Sponge.getCommandManager().register(this, CommandSpec.builder()
-            .executor((source, context) -> {
-                if (!(source instanceof Player)) {
-                    return CommandResult.empty();
-                }
-
-                UUID playerUUID = ((Player) source).getUniqueId();
-                if (!masquerades.containsKey(playerUUID)) {
-                    return CommandResult.empty();
-                }
-
-                SnowmanDataManipulator dataManipulator = masquerades.get(playerUUID).getDataManipulator();
-                dataManipulator.pumpkinEquipped.setValue(!dataManipulator.pumpkinEquipped.getValue());
-
-                return CommandResult.success();
-            }).build(), "pumpkin");
-
-        Sponge.getCommandManager().register(this, CommandSpec.builder()
                 .executor((source, context) -> {
                     if (!(source instanceof Player)) {
                         return CommandResult.empty();
@@ -93,7 +77,7 @@ public class MasqueradePlugin {
                         return CommandResult.empty();
                     }
 
-                    SnowmanDataManipulator dataManipulator = masquerades.get(playerUUID).getDataManipulator();
+                    EntityDataManipulator<?> dataManipulator = masquerades.get(playerUUID).getDataManipulator();
                     dataManipulator.onFire.setValue(!dataManipulator.onFire.getValue());
 
                     return CommandResult.success();
