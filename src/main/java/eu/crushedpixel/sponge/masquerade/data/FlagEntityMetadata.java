@@ -27,14 +27,13 @@ public class FlagEntityMetadata extends EntityMetadata<Byte, Boolean> {
 
     @Override
     public DataEntry<Byte> handleOutgoingDataEntry(DataEntry<Byte> dataEntry) {
-        if (dataEntry.getKey() != this.dataEntry.getKey()) return dataEntry;
-        // do not remove the DataEntry, as other parts of the flag may have been modified
-        if (overridesPlayerData) return dataEntry;
+        if (dataEntry.getKey() != this.dataEntry.getKey()) return null;
+        if (overridesPlayerData) return null;
 
         boolean value = getFlag(dataEntry.getValue(), position);
         // if the value hasn't changed in comparison to the last outgoing EntityMetadata packet,
         // we ignore the value to keep any changes made explicitly using setValue().
-        if (value == lastServersideValue) return dataEntry;
+        if (value == lastServersideValue) return null;
         lastServersideValue = value;
 
         // otherwise, update this part only

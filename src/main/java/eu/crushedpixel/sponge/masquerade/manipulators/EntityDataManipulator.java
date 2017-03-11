@@ -7,7 +7,6 @@ import eu.crushedpixel.sponge.masquerade.masquerades.Masquerade;
 import lombok.RequiredArgsConstructor;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.datasync.EntityDataManager.DataEntry;
-import net.minecraft.network.play.server.SPacketEntityMetadata;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,21 +56,6 @@ public class EntityDataManipulator<E extends Entity> implements DataManipulator 
     @Override
     public Masquerade<?, ?> getMasquerade() {
         return masquerade;
-    }
-
-    protected final void sendData(DataEntry data) {
-        List<DataEntry<?>> entries = new ArrayList<>();
-        entries.add(data);
-
-        sendData(entries);
-    }
-
-    protected final void sendData(List<DataEntry<?>> data) {
-        SPacketEntityMetadata packetEntityMetadata = new SPacketEntityMetadata();
-        packetEntityMetadata.entityId = masquerade.getEntityID();
-        packetEntityMetadata.dataManagerEntries = data;
-
-        masquerade.sendToAll(packetEntityMetadata);
     }
 
 }

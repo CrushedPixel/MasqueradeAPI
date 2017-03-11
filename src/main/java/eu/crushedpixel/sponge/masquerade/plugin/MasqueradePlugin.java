@@ -1,7 +1,6 @@
 package eu.crushedpixel.sponge.masquerade.plugin;
 
 import eu.crushedpixel.sponge.masquerade.manipulators.SnowmanDataManipulator;
-import eu.crushedpixel.sponge.masquerade.masquerades.Masquerade;
 import eu.crushedpixel.sponge.masquerade.masquerades.impl.SnowmanMasquerade;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandResult;
@@ -103,18 +102,10 @@ public class MasqueradePlugin {
 
     @Listener
     public void onPlayerJoin(ClientConnectionEvent.Join event) {
-        masquerades.forEach((uuid, masquerade) -> masquerade.maskTo(event.getTargetEntity()));
-    }
-
-    @Listener
-    public void onPlayerLeave(ClientConnectionEvent.Disconnect event) {
-        masquerades.forEach((uuid, masquerade) -> masquerade.unmaskTo(event.getTargetEntity()));
-
-        Masquerade masquerade = masquerades.get(event.getTargetEntity().getUniqueId());
-        if (masquerade != null) {
-            masquerade.unmask();
-            masquerades.remove(event.getTargetEntity().getUniqueId());
-        }
+        masquerades.forEach((uuid, masquerade) -> {
+            if (uuid.equals(event.getTargetEntity().getUniqueId())) return;
+            masquerade.maskTo(event.getTargetEntity());
+        });
     }
 
 }

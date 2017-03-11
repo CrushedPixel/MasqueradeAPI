@@ -176,13 +176,16 @@ public abstract class Masquerade<E extends Entity, D extends EntityDataManipulat
         connection.sendPackets(packets);
     }
 
-    private void sendEntityData(MasqueradePacketConnection connection) {
+    public void sendEntityData(MasqueradePacketConnection connection) {
         SPacketEntityMetadata packetEntityMetadata = new SPacketEntityMetadata();
         packetEntityMetadata.entityId = this.entityID;
         packetEntityMetadata.dataManagerEntries = new ArrayList<>();
 
         for (EntityMetadata<?, ?> entityMetadata : dataManipulator.getAllEntries()) {
-            packetEntityMetadata.dataManagerEntries.add(entityMetadata.getDataEntry());
+            // don't send duplicate data entries over
+            if (!packetEntityMetadata.dataManagerEntries.contains(entityMetadata.getDataEntry())) {
+                packetEntityMetadata.dataManagerEntries.add(entityMetadata.getDataEntry());
+            }
         }
 
         connection.sendPacket(packetEntityMetadata);

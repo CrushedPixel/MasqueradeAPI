@@ -33,10 +33,10 @@ public abstract class EntityMetadata<T, U> {
 
     /**
      * Manipulates an outgoing DataEntry value about to be sent to a client.
-     * @return <code>null</code> if the DataEntry wasn't modified and can be ignored, otherwise the DataEntry to send
+     * @return <code>null</code> if the DataEntry wasn't applied and can be ignored, otherwise the DataEntry to send
      */
     public DataEntry<T> handleOutgoingDataEntry(DataEntry<T> dataEntry) {
-        if (dataEntry.getKey() != this.dataEntry.getKey()) return dataEntry;
+        if (dataEntry.getKey() != this.dataEntry.getKey()) return null;
         if (overridesPlayerData) return null;
 
         this.dataEntry.setValue(dataEntry.getValue());

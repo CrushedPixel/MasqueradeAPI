@@ -111,6 +111,9 @@ public class MasqueradePacketConnection extends PacketListenerAdapter {
                 packetSpawnPlayer.yaw, packetSpawnPlayer.pitch, rotationToByte(0),
                 (short) 0, (short) 0, (short) 0
         ));
+
+        // once the new entity spawns, send all metadata
+        masquerade.sendEntityData(this);
     }
 
     private void handlePacketEntityMetadata(SPacketEntityMetadata packetEntityMetadata, PacketEvent packetEvent) {
@@ -128,16 +131,22 @@ public class MasqueradePacketConnection extends PacketListenerAdapter {
         while (it.hasNext()) {
             DataEntry dataEntry = it.next();
 
+            boolean wasApplied = false;
+
             for (EntityMetadata<?, ?> metadata : metadataEntries) {
                 DataEntry<?> handledEntry = metadata.handleOutgoingDataEntry(dataEntry);
 
-                if (handledEntry == null) {
-                    it.remove();
-                    break;
-                } else {
+                if (handledEntry != null) {
                     dataEntry = handledEntry;
                     it.set(handledEntry);
+                    wasApplied = true;
                 }
+            }
+
+            // if the outgoing data entry wasn't applied to the Masquerade's data model,
+            // remove it from the packet
+            if (!wasApplied) {
+                it.remove();
             }
         }
 
