@@ -1,11 +1,14 @@
 package eu.crushedpixel.sponge.masquerade.manipulators;
 
-import net.minecraft.network.datasync.EntityDataManager.DataEntry;
+import eu.crushedpixel.sponge.masquerade.data.EntityMetadata;
+import eu.crushedpixel.sponge.masquerade.masquerades.Masquerade;
 
 import java.util.List;
 
 public interface DataManipulator {
 
-    List<DataEntry<?>> getAllEntries();
+    List<EntityMetadata> getAllEntries();
+
+    Masquerade<?, ?> getMasquerade();
 
 }

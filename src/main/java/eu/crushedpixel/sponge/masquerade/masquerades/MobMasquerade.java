@@ -26,9 +26,9 @@ public abstract class MobMasquerade<E extends EntityLivingBase, D extends Entity
     }
 
     @Override
-    protected List<Packet> createSpawnPackets(double posX, double posY, double posZ,
-                                byte yaw, byte pitch, byte headPitch,
-                                short velX, short velY, short velZ) {
+    public List<Packet> createSpawnPackets(double posX, double posY, double posZ,
+                                           byte yaw, byte pitch, byte headPitch,
+                                           short velX, short velY, short velZ) {
         List<Packet> packetList = new ArrayList<>();
 
         SPacketSpawnMob packetSpawnMob = new SPacketSpawnMob();

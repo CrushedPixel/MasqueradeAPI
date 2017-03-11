@@ -21,9 +21,9 @@ public abstract class ObjectMasquerade<E extends Entity> extends Masquerade<E, E
     }
 
     @Override
-    protected List<Packet> createSpawnPackets(double posX, double posY, double posZ,
-                                byte yaw, byte pitch, byte headPitch,
-                                short velX, short velY, short velZ) {
+    public List<Packet> createSpawnPackets(double posX, double posY, double posZ,
+                                           byte yaw, byte pitch, byte headPitch,
+                                           short velX, short velY, short velZ) {
         List<Packet> packetList = new ArrayList<>();
 
         SPacketSpawnObject packetSpawnObject = new SPacketSpawnObject();

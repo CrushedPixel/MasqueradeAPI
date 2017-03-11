@@ -1,31 +1,33 @@
 package eu.crushedpixel.sponge.masquerade.manipulators;
 
+import eu.crushedpixel.sponge.masquerade.data.EntityMetadata;
 import eu.crushedpixel.sponge.masquerade.masquerades.Masquerade;
 import net.minecraft.entity.monster.EntitySnowman;
-import net.minecraft.network.datasync.EntityDataManager.DataEntry;
 
 import java.util.List;
 
 public class SnowmanDataManipulator extends EntityMobDataManipulator<EntitySnowman> {
 
-    private final DataEntry<Byte> pumpkinEquipped = new DataEntry<>(EntitySnowman.PUMPKIN_EQUIPPED, (byte) 0);
+    public final EntityMetadata<Byte, Boolean> pumpkinEquipped = new EntityMetadata<Byte, Boolean>(this, EntitySnowman.PUMPKIN_EQUIPPED, (byte) 0) {
+        @Override
+        public void setValue(Boolean value) {
+            dataEntry.setValue(value ? (byte) 0 : 0x10);
+            sendValue();
+        }
+
+        @Override
+        public Boolean getValue() {
+            return dataEntry.getValue() == 0;
+        }
+    };
 
     public SnowmanDataManipulator(Masquerade<EntitySnowman, SnowmanDataManipulator> masquerade) {
         super(masquerade);
     }
 
-    public boolean isPumpkinEquipped() {
-        return pumpkinEquipped.getValue() == 0x10;
-    }
-
-    public void setPumpkinEquipped(boolean pumpkinEquipped) {
-        this.pumpkinEquipped.setValue(pumpkinEquipped ? (byte) 0x10 : 0);
-        sendData(this.pumpkinEquipped);
-    }
-
     @Override
-    public List<DataEntry<?>> getAllEntries() {
-        List<DataEntry<?>> entries = super.getAllEntries();
+    public List<EntityMetadata> getAllEntries() {
+        List<EntityMetadata> entries = super.getAllEntries();
 
         entries.add(pumpkinEquipped);
 

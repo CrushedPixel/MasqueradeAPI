@@ -39,7 +39,7 @@ public class MasqueradePlugin {
 
                     SnowmanMasquerade masquerade = new SnowmanMasquerade((Player) source);
                     Sponge.getServer().getOnlinePlayers().forEach(player -> {
-                                if (player == source) return;
+                                if (player.getUniqueId().equals(((Player) source).getUniqueId())) return;
                                 masquerade.maskTo(player);
                             }
                     );
@@ -78,7 +78,7 @@ public class MasqueradePlugin {
                 }
 
                 SnowmanDataManipulator dataManipulator = masquerades.get(playerUUID).getDataManipulator();
-                dataManipulator.setPumpkinEquipped(!dataManipulator.isPumpkinEquipped());
+                dataManipulator.pumpkinEquipped.setValue(!dataManipulator.pumpkinEquipped.getValue());
 
                 return CommandResult.success();
             }).build(), "pumpkin");
@@ -95,7 +95,7 @@ public class MasqueradePlugin {
                     }
 
                     SnowmanDataManipulator dataManipulator = masquerades.get(playerUUID).getDataManipulator();
-                    dataManipulator.setOnFire(!dataManipulator.isOnFire());
+                    dataManipulator.onFire.setValue(!dataManipulator.onFire.getValue());
 
                     return CommandResult.success();
                 }).build(), "burn");
