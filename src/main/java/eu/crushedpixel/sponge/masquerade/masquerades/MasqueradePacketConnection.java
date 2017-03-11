@@ -1,7 +1,7 @@
-package eu.crushedpixel.sponge.masquerade;
+package eu.crushedpixel.sponge.masquerade.masquerades;
 
 import eu.crushedpixel.sponge.masquerade.data.EntityMetadata;
-import eu.crushedpixel.sponge.masquerade.masquerades.Masquerade;
+import eu.crushedpixel.sponge.masquerade.utils.PacketUtils;
 import eu.crushedpixel.sponge.packetgate.api.event.PacketEvent;
 import eu.crushedpixel.sponge.packetgate.api.listener.PacketListenerAdapter;
 import eu.crushedpixel.sponge.packetgate.api.registry.PacketConnection;
@@ -25,13 +25,12 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
 
-import static eu.crushedpixel.sponge.masquerade.utils.PacketMath.rotationToByte;
+import static eu.crushedpixel.sponge.masquerade.utils.PacketUtils.rotationToByte;
 
 @RequiredArgsConstructor
 public class MasqueradePacketConnection extends PacketListenerAdapter {
 
-    private static final String PLUGIN_CHANNEL = "Masquerade|internal";
-    private static final byte[] UNREGISTER_BYTES = "unregister".getBytes();
+    private static final String UNREGISTER_CHANNEL = "Masquerade|unregister";
 
     private final Masquerade<?, ?> masquerade;
     private final PacketConnection connection;
@@ -60,8 +59,8 @@ public class MasqueradePacketConnection extends PacketListenerAdapter {
      * the listener is unregistered.
      */
     public void unregister() {
-        SPacketCustomPayload packetCustomPayload = new SPacketCustomPayload(PLUGIN_CHANNEL,
-                new PacketBuffer(Unpooled.wrappedBuffer(UNREGISTER_BYTES)));
+        SPacketCustomPayload packetCustomPayload = new SPacketCustomPayload(UNREGISTER_CHANNEL,
+                new PacketBuffer(Unpooled.buffer(0)));
 
         connection.sendPacket(packetCustomPayload);
     }
@@ -117,10 +116,15 @@ public class MasqueradePacketConnection extends PacketListenerAdapter {
     private void handlePacketEntityMetadata(SPacketEntityMetadata packetEntityMetadata, PacketEvent packetEvent) {
         if (packetEntityMetadata.entityId != masquerade.getEntityID()) return;
 
-        // check if the manipulators keys are valid for the fake entity's type
-        List<EntityMetadata<?, ?>> metadataEntries = masquerade.getDataManipulator().getAllEntries();
+        // as Minecraft shares this packet with other connections,
+        // clone the packet so any manipulations only affect the packet sent to this connection
+        SPacketEntityMetadata packet = PacketUtils.clonePacketEntityMetadata(packetEntityMetadata);
+        packetEvent.setPacket(packet);
 
-        ListIterator<DataEntry<?>> it = packetEntityMetadata.dataManagerEntries.listIterator();
+        // check if the manipulators keys are valid for the fake entity's type
+        List<EntityMetadata> metadataEntries = masquerade.getDataManipulator().getAllEntries();
+
+        ListIterator<DataEntry<?>> it = packet.dataManagerEntries.listIterator();
         while (it.hasNext()) {
             DataEntry dataEntry = it.next();
 
@@ -137,7 +141,7 @@ public class MasqueradePacketConnection extends PacketListenerAdapter {
             }
         }
 
-        if (packetEntityMetadata.dataManagerEntries.isEmpty()) {
+        if (packet.dataManagerEntries.isEmpty()) {
             packetEvent.setCancelled(true);
         }
     }
@@ -177,9 +181,7 @@ public class MasqueradePacketConnection extends PacketListenerAdapter {
     }
 
     private void handlePacketCustomPayload(SPacketCustomPayload packetCustomPayload, PacketEvent packetEvent) {
-        if (!PLUGIN_CHANNEL.equals(packetCustomPayload.channel)) return;
-        if (!PLUGIN_CHANNEL.getBytes().equals(UNREGISTER_BYTES)) return;
-
+        if (!UNREGISTER_CHANNEL.equals(packetCustomPayload.channel)) return;
         packetEvent.setCancelled(true);
 
         // unregister listener

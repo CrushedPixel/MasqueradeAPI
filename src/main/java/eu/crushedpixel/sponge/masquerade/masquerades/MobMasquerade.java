@@ -11,7 +11,7 @@ import org.spongepowered.api.entity.living.player.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class MobMasquerade<E extends EntityLivingBase, D extends EntityDataManipulator> extends Masquerade<E, D> {
+public abstract class MobMasquerade<E extends EntityLivingBase, D extends EntityDataManipulator<?>> extends Masquerade<E, D> {
 
     // the entity type
     protected final int entityType;

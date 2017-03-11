@@ -9,7 +9,7 @@ import org.spongepowered.api.entity.living.player.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class ObjectMasquerade<E extends Entity> extends Masquerade<E, EntityDataManipulator> {
+public abstract class ObjectMasquerade<E extends Entity> extends Masquerade<E, EntityDataManipulator<E>> {
 
     // the object type
     private final int objectType;

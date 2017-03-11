@@ -2,13 +2,8 @@ package eu.crushedpixel.sponge.masquerade.masquerades;
 
 import com.flowpowered.math.vector.Vector3d;
 import com.google.common.base.Preconditions;
-import eu.crushedpixel.sponge.masquerade.MasqueradePacketConnection;
 import eu.crushedpixel.sponge.masquerade.data.EntityMetadata;
 import eu.crushedpixel.sponge.masquerade.manipulators.EntityDataManipulator;
-import eu.crushedpixel.sponge.packetgate.api.event.PacketEvent;
-import eu.crushedpixel.sponge.packetgate.api.listener.PacketListener;
-import eu.crushedpixel.sponge.packetgate.api.listener.PacketListenerAdapter;
-import eu.crushedpixel.sponge.packetgate.api.registry.PacketConnection;
 import eu.crushedpixel.sponge.packetgate.api.registry.PacketGate;
 import lombok.Getter;
 import lombok.Setter;
@@ -34,10 +29,10 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static eu.crushedpixel.sponge.masquerade.utils.PacketMath.rotationToByte;
-import static eu.crushedpixel.sponge.masquerade.utils.PacketMath.velocityToShort;
+import static eu.crushedpixel.sponge.masquerade.utils.PacketUtils.rotationToByte;
+import static eu.crushedpixel.sponge.masquerade.utils.PacketUtils.velocityToShort;
 
-public abstract class Masquerade<E extends Entity, D extends EntityDataManipulator> {
+public abstract class Masquerade<E extends Entity, D extends EntityDataManipulator<?>> {
 
     @Getter
     private final UUID playerUUID;
@@ -72,19 +67,6 @@ public abstract class Masquerade<E extends Entity, D extends EntityDataManipulat
         this.packetGate = Sponge.getServiceManager().provide(PacketGate.class).get();
         this.validAttributes = registerAttributes(entityClass);
         this.dataManipulator = createDataManipulator();
-
-        PacketGate packetGate = Sponge.getServiceManager().provide(PacketGate.class).get();
-        packetGate.registerListener(new PacketListenerAdapter() {
-                    @Override
-                    public void onPacketWrite(PacketEvent packetEvent, PacketConnection connection) {
-                        if (packetEvent.getPacket() instanceof SPacketEntityMetadata) {
-                            SPacketEntityMetadata packetEntityMetadata = (SPacketEntityMetadata) packetEvent.getPacket();
-                            packetEntityMetadata.dataManagerEntries.forEach(dataEntry -> {
-                                System.out.println(dataEntry.getKey().getId() + " " + dataEntry.getValue());
-                            });
-                        }
-                    }
-                }, PacketListener.ListenerPriority.LAST, packetGate.connectionByPlayer(player).get());
     }
 
     protected abstract D createDataManipulator();
@@ -199,7 +181,7 @@ public abstract class Masquerade<E extends Entity, D extends EntityDataManipulat
         packetEntityMetadata.entityId = this.entityID;
         packetEntityMetadata.dataManagerEntries = new ArrayList<>();
 
-        for (EntityMetadata<?, ?> entityMetadata : (List<EntityMetadata<?, ?>>) dataManipulator.getAllEntries()) {
+        for (EntityMetadata<?, ?> entityMetadata : dataManipulator.getAllEntries()) {
             packetEntityMetadata.dataManagerEntries.add(entityMetadata.getDataEntry());
         }
 
