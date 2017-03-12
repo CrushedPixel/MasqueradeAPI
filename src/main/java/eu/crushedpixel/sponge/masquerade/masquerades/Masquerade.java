@@ -5,8 +5,6 @@ import com.google.common.base.Preconditions;
 import eu.crushedpixel.sponge.masquerade.data.EntityMetadata;
 import eu.crushedpixel.sponge.masquerade.manipulators.EntityDataManipulator;
 import eu.crushedpixel.sponge.packetgate.api.registry.PacketGate;
-import lombok.Getter;
-import lombok.Setter;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -34,7 +32,6 @@ import static eu.crushedpixel.sponge.masquerade.utils.PacketUtils.velocityToShor
 
 public abstract class Masquerade<E extends Entity, D extends EntityDataManipulator<?>> {
 
-    @Getter
     private final UUID playerUUID;
 
     private final PacketGate packetGate;
@@ -45,20 +42,16 @@ public abstract class Masquerade<E extends Entity, D extends EntityDataManipulat
     private final Map<UUID, MasqueradePacketConnection> deceived = new ConcurrentHashMap<>();
 
     // the player's entity ID
-    @Getter @Setter
     protected int entityID;
 
     // the fake entity uuid
     protected final UUID entityUUID = UUID.randomUUID();
 
-    @Getter
     private final Class<? extends E> entityClass;
 
-    @Getter
     private final Set<IAttribute> validAttributes;
 
-    @Getter
-    private D dataManipulator;
+    private final D dataManipulator;
 
     public Masquerade(Player player, Class<? extends E> entityClass) {
         this.playerUUID = player.getUniqueId();
@@ -193,6 +186,30 @@ public abstract class Masquerade<E extends Entity, D extends EntityDataManipulat
 
     public void sendToAll(Packet packet) {
         deceived.forEach((uuid, connection) -> connection.sendPacket(packet));
+    }
+
+    public UUID getPlayerUUID() {
+        return playerUUID;
+    }
+
+    public int getEntityID() {
+        return entityID;
+    }
+
+    public void setEntityID(int entityID) {
+        this.entityID = entityID;
+    }
+
+    public D getDataManipulator() {
+        return dataManipulator;
+    }
+
+    public Class<? extends E> getEntityClass() {
+        return entityClass;
+    }
+
+    public Set<IAttribute> getValidAttributes() {
+        return validAttributes;
     }
 
 }

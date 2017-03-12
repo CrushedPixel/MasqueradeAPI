@@ -1,8 +1,6 @@
 package eu.crushedpixel.sponge.masquerade.data;
 
 import eu.crushedpixel.sponge.masquerade.manipulators.DataManipulator;
-import lombok.Getter;
-import lombok.Setter;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.EntityDataManager.DataEntry;
 import net.minecraft.network.play.server.SPacketEntityMetadata;
@@ -14,12 +12,10 @@ public abstract class EntityMetadata<T, U> {
     /**
      * Whether this field's value has priority over the masked player's metadata.
      */
-    @Getter @Setter
     protected boolean overridesPlayerData = false;
 
     private final DataManipulator dataManipulator;
 
-    @Getter
     protected final DataEntry<T> dataEntry;
 
     public EntityMetadata(DataManipulator dataManipulator, DataParameter<T> key, T initialValue) {
@@ -56,4 +52,15 @@ public abstract class EntityMetadata<T, U> {
         dataManipulator.getMasquerade().sendToAll(packetEntityMetadata);
     }
 
+    public boolean overridesPlayerData() {
+        return overridesPlayerData;
+    }
+
+    public void setOverridesPlayerData(boolean overridesPlayerData) {
+        this.overridesPlayerData = overridesPlayerData;
+    }
+
+    public DataEntry<T> getDataEntry() {
+        return dataEntry;
+    }
 }

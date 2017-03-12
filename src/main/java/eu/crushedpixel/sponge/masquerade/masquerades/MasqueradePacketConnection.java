@@ -7,7 +7,6 @@ import eu.crushedpixel.sponge.packetgate.api.listener.PacketListenerAdapter;
 import eu.crushedpixel.sponge.packetgate.api.registry.PacketConnection;
 import eu.crushedpixel.sponge.packetgate.api.registry.PacketGate;
 import io.netty.buffer.Unpooled;
-import lombok.RequiredArgsConstructor;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.attributes.IAttribute;
 import net.minecraft.network.Packet;
@@ -27,13 +26,17 @@ import java.util.Set;
 
 import static eu.crushedpixel.sponge.masquerade.utils.PacketUtils.rotationToByte;
 
-@RequiredArgsConstructor
 public class MasqueradePacketConnection extends PacketListenerAdapter {
 
     private static final String UNREGISTER_CHANNEL = "Masquerade|unregister";
 
     private final Masquerade<?, ?> masquerade;
     private final PacketConnection connection;
+
+    public MasqueradePacketConnection(Masquerade<?, ?> masquerade, PacketConnection connection) {
+        this.masquerade = masquerade;
+        this.connection = connection;
+    }
 
     /**
      * List of Packets that were sent out manually and should therefore not be handled

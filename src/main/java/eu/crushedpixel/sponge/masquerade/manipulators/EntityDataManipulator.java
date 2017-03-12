@@ -4,14 +4,12 @@ import eu.crushedpixel.sponge.masquerade.data.BasicEntityMetadata;
 import eu.crushedpixel.sponge.masquerade.data.EntityMetadata;
 import eu.crushedpixel.sponge.masquerade.data.FlagEntityMetadata;
 import eu.crushedpixel.sponge.masquerade.masquerades.Masquerade;
-import lombok.RequiredArgsConstructor;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.datasync.EntityDataManager.DataEntry;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@RequiredArgsConstructor
 public class EntityDataManipulator<E extends Entity> implements DataManipulator {
 
     private static final int FLAG_ON_FIRE = 0;
@@ -34,6 +32,10 @@ public class EntityDataManipulator<E extends Entity> implements DataManipulator 
     public final EntityMetadata<Boolean, Boolean> noGravity = new BasicEntityMetadata<>(this, Entity.NO_GRAVITY, false);
 
     private final Masquerade<E, ? extends EntityDataManipulator<E>> masquerade;
+
+    public EntityDataManipulator(Masquerade<E, ? extends EntityDataManipulator<E>> masquerade) {
+        this.masquerade = masquerade;
+    }
 
     @Override
     public List<EntityMetadata> getAllEntries() {
