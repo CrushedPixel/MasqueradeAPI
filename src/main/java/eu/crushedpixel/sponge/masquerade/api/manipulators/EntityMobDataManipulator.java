@@ -12,12 +12,12 @@ public class EntityMobDataManipulator<E extends EntityLivingBase> extends Entity
 
     private static final int FLAG_ELYTRA_FLYING = 7;
 
-    public final EntityMetadata<Byte, Boolean> elytraFlying = new FlagEntityMetadata(this, flags, FLAG_ELYTRA_FLYING);
-    public final EntityMetadata<Byte, Byte> handStates = new BasicEntityMetadata<>(this, EntityLivingBase.HAND_STATES, (byte) 0);
-    public final BasicEntityMetadata<Float> health = new BasicEntityMetadata<>(this, EntityLivingBase.HEALTH, 1f);
-    public final BasicEntityMetadata<Integer> potionEffectColor = new BasicEntityMetadata<>(this, EntityLivingBase.POTION_EFFECTS, 0);
-    public final BasicEntityMetadata<Boolean> hideParticles = new BasicEntityMetadata<>(this, EntityLivingBase.HIDE_PARTICLES, false);
-    public final BasicEntityMetadata<Integer> arrowCountInEntity = new BasicEntityMetadata<>(this, EntityLivingBase.ARROW_COUNT_IN_ENTITY, 0);
+    public final EntityMetadata<Byte, Boolean> elytraFlying = new FlagEntityMetadata(this, flags, FLAG_ELYTRA_FLYING, "elytraFlying");
+    public final EntityMetadata<Byte, Byte> handStates = new BasicEntityMetadata<>(this, EntityLivingBase.HAND_STATES, (byte) 0, "handStates");
+    public final BasicEntityMetadata<Float> health = new BasicEntityMetadata<>(this, EntityLivingBase.HEALTH, 1f, "health");
+    public final BasicEntityMetadata<Integer> potionEffectColor = new BasicEntityMetadata<>(this, EntityLivingBase.POTION_EFFECTS, 0, "potionEffects");
+    public final BasicEntityMetadata<Boolean> hideParticles = new BasicEntityMetadata<>(this, EntityLivingBase.HIDE_PARTICLES, false, "hideParticles");
+    public final BasicEntityMetadata<Integer> arrowCountInEntity = new BasicEntityMetadata<>(this, EntityLivingBase.ARROW_COUNT_IN_ENTITY, 0, "arrowCount");
 
     public EntityMobDataManipulator(Masquerade<E, ? extends EntityDataManipulator<E>> masquerade) {
         super(masquerade);

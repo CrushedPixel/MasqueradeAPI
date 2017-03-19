@@ -9,8 +9,8 @@ public class FlagEntityMetadata extends EntityMetadata<Byte, Boolean> {
 
     private boolean lastServersideValue;
 
-    public FlagEntityMetadata(DataManipulator dataManipulator, DataEntry<Byte> flagDataEntry, int position) {
-        super(dataManipulator, flagDataEntry);
+    public FlagEntityMetadata(DataManipulator dataManipulator, DataEntry<Byte> flagDataEntry, int position, String name) {
+        super(dataManipulator, flagDataEntry, name);
         this.position = position;
     }
 

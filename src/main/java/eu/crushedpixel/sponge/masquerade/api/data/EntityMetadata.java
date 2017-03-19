@@ -18,13 +18,16 @@ public abstract class EntityMetadata<T, U> {
 
     protected final DataEntry<T> dataEntry;
 
-    public EntityMetadata(DataManipulator dataManipulator, DataParameter<T> key, T initialValue) {
-        this(dataManipulator, new DataEntry<>(key, initialValue));
+    private final String name;
+
+    public EntityMetadata(DataManipulator dataManipulator, DataParameter<T> key, T initialValue, String name) {
+        this(dataManipulator, new DataEntry<>(key, initialValue), name);
     }
 
-    protected EntityMetadata(DataManipulator dataManipulator, DataEntry<T> dataEntry) {
+    protected EntityMetadata(DataManipulator dataManipulator, DataEntry<T> dataEntry, String name) {
         this.dataManipulator = dataManipulator;
         this.dataEntry = dataEntry;
+        this.name = name;
     }
 
     /**
@@ -62,5 +65,9 @@ public abstract class EntityMetadata<T, U> {
 
     public DataEntry<T> getDataEntry() {
         return dataEntry;
+    }
+
+    public String getName() {
+        return name;
     }
 }
