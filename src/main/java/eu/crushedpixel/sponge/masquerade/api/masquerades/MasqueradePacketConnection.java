@@ -1,7 +1,7 @@
-package eu.crushedpixel.sponge.masquerade.masquerades;
+package eu.crushedpixel.sponge.masquerade.api.masquerades;
 
-import eu.crushedpixel.sponge.masquerade.data.EntityMetadata;
-import eu.crushedpixel.sponge.masquerade.utils.PacketUtils;
+import eu.crushedpixel.sponge.masquerade.api.data.EntityMetadata;
+import eu.crushedpixel.sponge.masquerade.api.utils.PacketUtils;
 import eu.crushedpixel.sponge.packetgate.api.event.PacketEvent;
 import eu.crushedpixel.sponge.packetgate.api.listener.PacketListenerAdapter;
 import eu.crushedpixel.sponge.packetgate.api.registry.PacketConnection;
@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
 
-import static eu.crushedpixel.sponge.masquerade.utils.PacketUtils.rotationToByte;
+import static eu.crushedpixel.sponge.masquerade.api.utils.PacketUtils.rotationToByte;
 
 public class MasqueradePacketConnection extends PacketListenerAdapter {
 

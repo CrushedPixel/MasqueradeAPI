@@ -1,4 +1,4 @@
-package eu.crushedpixel.sponge.masquerade.utils;
+package eu.crushedpixel.sponge.masquerade.api.utils;
 
 import net.minecraft.network.datasync.EntityDataManager.DataEntry;
 import net.minecraft.network.play.server.SPacketEntityMetadata;

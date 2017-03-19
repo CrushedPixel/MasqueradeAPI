@@ -1,9 +1,9 @@
-package eu.crushedpixel.sponge.masquerade.masquerades;
+package eu.crushedpixel.sponge.masquerade.api.masquerades;
 
 import com.flowpowered.math.vector.Vector3d;
 import com.google.common.base.Preconditions;
-import eu.crushedpixel.sponge.masquerade.data.EntityMetadata;
-import eu.crushedpixel.sponge.masquerade.manipulators.EntityDataManipulator;
+import eu.crushedpixel.sponge.masquerade.api.data.EntityMetadata;
+import eu.crushedpixel.sponge.masquerade.api.manipulators.EntityDataManipulator;
 import eu.crushedpixel.sponge.packetgate.api.registry.PacketGate;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -27,8 +27,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static eu.crushedpixel.sponge.masquerade.utils.PacketUtils.rotationToByte;
-import static eu.crushedpixel.sponge.masquerade.utils.PacketUtils.velocityToShort;
+import static eu.crushedpixel.sponge.masquerade.api.utils.PacketUtils.rotationToByte;
+import static eu.crushedpixel.sponge.masquerade.api.utils.PacketUtils.velocityToShort;
 
 public abstract class Masquerade<E extends Entity, D extends EntityDataManipulator<?>> {
 

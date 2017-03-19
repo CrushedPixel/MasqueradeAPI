@@ -1,7 +1,7 @@
-package eu.crushedpixel.sponge.masquerade.masquerades.impl;
+package eu.crushedpixel.sponge.masquerade.api.masquerades.impl;
 
-import eu.crushedpixel.sponge.masquerade.manipulators.SnowmanDataManipulator;
-import eu.crushedpixel.sponge.masquerade.masquerades.MobMasquerade;
+import eu.crushedpixel.sponge.masquerade.api.manipulators.SnowmanDataManipulator;
+import eu.crushedpixel.sponge.masquerade.api.masquerades.MobMasquerade;
 import net.minecraft.entity.monster.EntitySnowman;
 import org.spongepowered.api.entity.living.player.Player;
 

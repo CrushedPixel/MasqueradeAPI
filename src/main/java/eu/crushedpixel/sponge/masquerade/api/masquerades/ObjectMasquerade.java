@@ -1,6 +1,6 @@
-package eu.crushedpixel.sponge.masquerade.masquerades;
+package eu.crushedpixel.sponge.masquerade.api.masquerades;
 
-import eu.crushedpixel.sponge.masquerade.manipulators.EntityDataManipulator;
+import eu.crushedpixel.sponge.masquerade.api.manipulators.EntityDataManipulator;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.SPacketSpawnObject;

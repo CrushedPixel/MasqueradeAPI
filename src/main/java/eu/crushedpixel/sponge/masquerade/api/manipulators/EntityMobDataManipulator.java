@@ -1,9 +1,9 @@
-package eu.crushedpixel.sponge.masquerade.manipulators;
+package eu.crushedpixel.sponge.masquerade.api.manipulators;
 
-import eu.crushedpixel.sponge.masquerade.data.BasicEntityMetadata;
-import eu.crushedpixel.sponge.masquerade.data.EntityMetadata;
-import eu.crushedpixel.sponge.masquerade.data.FlagEntityMetadata;
-import eu.crushedpixel.sponge.masquerade.masquerades.Masquerade;
+import eu.crushedpixel.sponge.masquerade.api.data.FlagEntityMetadata;
+import eu.crushedpixel.sponge.masquerade.api.masquerades.Masquerade;
+import eu.crushedpixel.sponge.masquerade.api.data.BasicEntityMetadata;
+import eu.crushedpixel.sponge.masquerade.api.data.EntityMetadata;
 import net.minecraft.entity.EntityLivingBase;
 
 import java.util.List;

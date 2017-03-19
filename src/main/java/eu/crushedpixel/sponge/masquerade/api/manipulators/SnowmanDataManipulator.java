@@ -1,7 +1,7 @@
-package eu.crushedpixel.sponge.masquerade.manipulators;
+package eu.crushedpixel.sponge.masquerade.api.manipulators;
 
-import eu.crushedpixel.sponge.masquerade.data.EntityMetadata;
-import eu.crushedpixel.sponge.masquerade.masquerades.Masquerade;
+import eu.crushedpixel.sponge.masquerade.api.data.EntityMetadata;
+import eu.crushedpixel.sponge.masquerade.api.masquerades.Masquerade;
 import net.minecraft.entity.monster.EntitySnowman;
 
 import java.util.List;

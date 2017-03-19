@@ -39,7 +39,7 @@ minecraft {
 }
 
 jar {
-    manifest.attributes('FMLAT': 'masquerade_at.cfg')
+    manifest.attributes('FMLAT': 'masquerade_api_at.cfg')
 }
 
 install {

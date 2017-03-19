@@ -1,6 +1,6 @@
-package eu.crushedpixel.sponge.masquerade.masquerades.impl;
+package eu.crushedpixel.sponge.masquerade.api.masquerades.impl;
 
-import eu.crushedpixel.sponge.masquerade.masquerades.ObjectMasquerade;
+import eu.crushedpixel.sponge.masquerade.api.masquerades.ObjectMasquerade;
 import net.minecraft.entity.item.EntityMinecart;
 import org.spongepowered.api.entity.living.player.Player;
 

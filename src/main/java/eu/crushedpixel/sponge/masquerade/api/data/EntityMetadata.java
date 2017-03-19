@@ -1,6 +1,6 @@
-package eu.crushedpixel.sponge.masquerade.data;
+package eu.crushedpixel.sponge.masquerade.api.data;
 
-import eu.crushedpixel.sponge.masquerade.manipulators.DataManipulator;
+import eu.crushedpixel.sponge.masquerade.api.manipulators.DataManipulator;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.EntityDataManager.DataEntry;
 import net.minecraft.network.play.server.SPacketEntityMetadata;
