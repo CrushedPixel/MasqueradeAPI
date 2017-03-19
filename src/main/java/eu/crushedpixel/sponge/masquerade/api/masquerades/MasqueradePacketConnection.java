@@ -108,6 +108,9 @@ public class MasqueradePacketConnection extends PacketListenerAdapter {
 
         packetEvent.setCancelled(true);
 
+        // despawn the entity first in case the client still knows the fake entity
+        masquerade.despawnEntity(this);
+
         // replace spawn player packets with the fake entity spawn packets
         sendPackets(masquerade.createSpawnPackets(
                 packetSpawnPlayer.x, packetSpawnPlayer.y, packetSpawnPlayer.z,

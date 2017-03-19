@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class PacketUtils {
 
     public static byte rotationToByte(double rotation) {
-        return (byte) (int) (rotation * 256f / 360f);
+        return (byte) (rotation * 256f / 360f);
     }
 
     public static short velocityToShort(double velocity) {

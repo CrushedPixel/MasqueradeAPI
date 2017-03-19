@@ -76,15 +76,20 @@ public abstract class Masquerade<E extends Entity, D extends EntityDataManipulat
         MasqueradePacketConnection connection = new MasqueradePacketConnection(
                 this, packetGate.connectionByPlayer(player).get());
 
-        // first, send a packet telling the client that the player entity has been removed
-        despawnEntity(connection);
+        Player masked = Sponge.getServer().getPlayer(playerUUID).get();
 
-        // then, spawn the fake entity with the same ID that the player entity used to have
-        // so that all further player packets refer to the masquerade instead
-        spawnEntity(Sponge.getServer().getPlayer(playerUUID).get(), connection);
+        // only spawn the entity if the players are in the same world
+        if (player.getWorld().getUniqueId().equals(masked.getWorld().getUniqueId())) {
+            // first, send a packet telling the client that the player entity has been removed
+            despawnEntity(connection);
 
-        // send all entity metadata
-        sendEntityData(connection);
+            // then, spawn the fake entity with the same ID that the player entity used to have
+            // so that all further player packets refer to the masquerade instead
+            spawnEntity(masked, connection);
+
+            // send all entity metadata
+            sendEntityData(connection);
+        }
 
         connection.register();
         deceived.put(player.getUniqueId(), connection);
@@ -143,7 +148,7 @@ public abstract class Masquerade<E extends Entity, D extends EntityDataManipulat
     private List<Packet> createSpawnPackets(Location location, Vector3d rotation, Vector3d headRotation, Vector3d velocity) {
         return createSpawnPackets(
                 location.getX(), location.getY(), location.getZ(),
-                rotationToByte(rotation.getX()), rotationToByte(rotation.getY()),
+                rotationToByte(rotation.getY()), rotationToByte(rotation.getX()),
                 rotationToByte(headRotation.getY()),
                 velocityToShort(velocity.getX()), velocityToShort(velocity.getY()), velocityToShort(velocity.getZ())
         );

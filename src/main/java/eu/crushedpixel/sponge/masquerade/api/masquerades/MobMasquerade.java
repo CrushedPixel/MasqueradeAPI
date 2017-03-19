@@ -27,7 +27,7 @@ public abstract class MobMasquerade<E extends EntityLivingBase, D extends Entity
 
     @Override
     public List<Packet> createSpawnPackets(double posX, double posY, double posZ,
-                                           byte yaw, byte pitch, byte headPitch,
+                                           byte yaw, byte pitch, byte headYaw,
                                            short velX, short velY, short velZ) {
         List<Packet> packetList = new ArrayList<>();
 
@@ -40,7 +40,7 @@ public abstract class MobMasquerade<E extends EntityLivingBase, D extends Entity
         packetSpawnMob.z = posZ;
         packetSpawnMob.yaw = yaw;
         packetSpawnMob.pitch = pitch;
-        packetSpawnMob.headPitch = headPitch;
+        packetSpawnMob.headPitch = headYaw; // the packet's field is incorrectly translated
         packetSpawnMob.velocityX = velX;
         packetSpawnMob.velocityY = velY;
         packetSpawnMob.velocityZ = velZ;
