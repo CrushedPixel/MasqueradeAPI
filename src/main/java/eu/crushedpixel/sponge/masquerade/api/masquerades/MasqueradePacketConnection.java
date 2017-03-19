@@ -12,6 +12,7 @@ import net.minecraft.entity.ai.attributes.IAttribute;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.datasync.EntityDataManager.DataEntry;
+import net.minecraft.network.play.server.SPacketAnimation;
 import net.minecraft.network.play.server.SPacketCustomPayload;
 import net.minecraft.network.play.server.SPacketEntityMetadata;
 import net.minecraft.network.play.server.SPacketEntityProperties;
@@ -92,6 +93,8 @@ public class MasqueradePacketConnection extends PacketListenerAdapter {
             handlePacketEntityMetadata((SPacketEntityMetadata) packet, packetEvent);
         } else if (packet instanceof SPacketEntityProperties) {
             handlePacketEntityProperties((SPacketEntityProperties) packet, packetEvent);
+        } else if (packet instanceof SPacketAnimation) {
+            handlePacketAnimation((SPacketAnimation) packet, packetEvent);
         } else if (packet instanceof SPacketCustomPayload) {
             handlePacketCustomPayload((SPacketCustomPayload) packet, packetEvent);
         }
@@ -193,6 +196,15 @@ public class MasqueradePacketConnection extends PacketListenerAdapter {
         if (packetEntityProperties.snapshots.isEmpty()) {
             packetEvent.setCancelled(true);
         }
+    }
+
+    private void handlePacketAnimation(SPacketAnimation packetAnimation, PacketEvent packetEvent) {
+        if (packetAnimation.entityId != masquerade.getEntityID()) return;
+
+        // the clients can't handle animation packets when the entity is not a subclass of EntityLivingBase.
+        if (EntityLivingBase.class.isAssignableFrom(masquerade.getEntityClass())) return;
+
+        packetEvent.setCancelled(true);
     }
 
     private void handlePacketCustomPayload(SPacketCustomPayload packetCustomPayload, PacketEvent packetEvent) {
