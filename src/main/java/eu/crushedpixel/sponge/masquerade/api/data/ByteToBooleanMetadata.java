@@ -1,34 +1,25 @@
 package eu.crushedpixel.sponge.masquerade.api.data;
 
-import eu.crushedpixel.sponge.masquerade.api.manipulators.DataManipulator;
+import eu.crushedpixel.sponge.masquerade.api.masquerades.AbstractMasquerade;
 import net.minecraft.network.datasync.DataParameter;
 
 public class ByteToBooleanMetadata extends EntityMetadata<Byte, Boolean> {
 
     private final byte valueTrue;
 
-    public ByteToBooleanMetadata(DataManipulator dataManipulator, DataParameter<Byte> key,
-                                 byte valueTrue, Byte initialValue, String name) {
-        super(dataManipulator, key, initialValue, name);
+    public ByteToBooleanMetadata(AbstractMasquerade masquerade, DataParameter<Byte> parameter,
+                                 byte valueTrue, Byte initialValue) {
+        super(masquerade, parameter, initialValue);
         this.valueTrue = valueTrue;
     }
 
     @Override
-    public void setValue(Boolean value) {
-        dataEntry.setValue(convert(value));
-        sendValue();
+    protected Boolean convertToExternal(Byte value) {
+        return value == valueTrue;
     }
 
     @Override
-    public Boolean getValue() {
-        return convert(dataEntry.getValue());
-    }
-
-    protected Byte convert(boolean value) {
+    protected Byte convertToInternal(Boolean value) {
         return value ? valueTrue : 0;
-    }
-
-    protected boolean convert(Byte value) {
-        return value == valueTrue;
     }
 }

@@ -1,6 +1,7 @@
 package eu.crushedpixel.sponge.masquerade.api.data;
 
-import eu.crushedpixel.sponge.masquerade.api.manipulators.DataManipulator;
+import com.google.common.base.Preconditions;
+import eu.crushedpixel.sponge.masquerade.api.masquerades.AbstractMasquerade;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.EntityDataManager.DataEntry;
 import net.minecraft.network.play.server.SPacketEntityMetadata;
@@ -10,24 +11,22 @@ import java.util.ArrayList;
 public abstract class EntityMetadata<T, U> {
 
     /**
-     * Whether this field's value has priority over the masked player's metadata.
+     * Whether this value may be non-explicitly changed by the server.
      */
-    protected boolean overridesPlayerData = false;
+    protected boolean allowValueChange = true;
 
-    private final DataManipulator dataManipulator;
+    private final AbstractMasquerade masquerade;
 
     protected final DataEntry<T> dataEntry;
 
-    private final String name;
-
-    public EntityMetadata(DataManipulator dataManipulator, DataParameter<T> key, T initialValue, String name) {
-        this(dataManipulator, new DataEntry<>(key, initialValue), name);
+    public EntityMetadata(AbstractMasquerade masquerade, DataParameter<T> parameter, T initialValue) {
+        this(masquerade, new DataEntry<>(parameter, initialValue));
     }
 
-    protected EntityMetadata(DataManipulator dataManipulator, DataEntry<T> dataEntry, String name) {
-        this.dataManipulator = dataManipulator;
+    protected EntityMetadata(AbstractMasquerade masquerade, DataEntry<T> dataEntry) {
+        Preconditions.checkNotNull(dataEntry);
+        this.masquerade = masquerade;
         this.dataEntry = dataEntry;
-        this.name = name;
     }
 
     /**
@@ -36,38 +35,43 @@ public abstract class EntityMetadata<T, U> {
      */
     public DataEntry<T> handleOutgoingDataEntry(DataEntry<T> dataEntry) {
         if (dataEntry.getKey() != this.dataEntry.getKey()) return null;
-        if (overridesPlayerData) return null;
+        if (!allowValueChange) return null;
 
         this.dataEntry.setValue(dataEntry.getValue());
         return this.dataEntry;
     }
 
-    public abstract void setValue(U value);
+    public void setValue(U value) {
+        dataEntry.setValue(convertToInternal(value));
+        sendValue();
+    }
 
-    public abstract U getValue();
+    public U getValue() {
+        return convertToExternal(dataEntry.getValue());
+    }
+
+    protected abstract U convertToExternal(T value);
+    protected abstract T convertToInternal(U value);
 
     protected void sendValue() {
         SPacketEntityMetadata packetEntityMetadata = new SPacketEntityMetadata();
-        packetEntityMetadata.entityId = dataManipulator.getMasquerade().getEntityID();
+        packetEntityMetadata.entityId = masquerade.getEntityID();
         packetEntityMetadata.dataManagerEntries = new ArrayList<>();
         packetEntityMetadata.dataManagerEntries.add(dataEntry);
 
-        dataManipulator.getMasquerade().sendToAll(packetEntityMetadata);
+        masquerade.sendToAll(packetEntityMetadata);
     }
 
-    public boolean overridesPlayerData() {
-        return overridesPlayerData;
+    public boolean isAllowValueChange() {
+        return allowValueChange;
     }
 
-    public void setOverridesPlayerData(boolean overridesPlayerData) {
-        this.overridesPlayerData = overridesPlayerData;
+    public void setAllowValueChange(boolean allowValueChange) {
+        this.allowValueChange = allowValueChange;
     }
 
     public DataEntry<T> getDataEntry() {
         return dataEntry;
     }
 
-    public String getName() {
-        return name;
-    }
 }

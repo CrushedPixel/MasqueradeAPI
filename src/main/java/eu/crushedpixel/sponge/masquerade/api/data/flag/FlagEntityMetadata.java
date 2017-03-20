@@ -1,34 +1,24 @@
-package eu.crushedpixel.sponge.masquerade.api.data;
+package eu.crushedpixel.sponge.masquerade.api.data.flag;
 
-import eu.crushedpixel.sponge.masquerade.api.manipulators.DataManipulator;
+import eu.crushedpixel.sponge.masquerade.api.data.EntityMetadata;
+import eu.crushedpixel.sponge.masquerade.api.masquerades.AbstractMasquerade;
 import net.minecraft.network.datasync.EntityDataManager.DataEntry;
 
-public class FlagEntityMetadata extends EntityMetadata<Byte, Boolean> {
+public abstract class FlagEntityMetadata<T> extends EntityMetadata<Byte, T> {
 
-    private final int position;
+    protected final int position;
 
     private boolean lastServersideValue;
 
-    public FlagEntityMetadata(DataManipulator dataManipulator, DataEntry<Byte> flagDataEntry, int position, String name) {
-        super(dataManipulator, flagDataEntry, name);
+    public FlagEntityMetadata(AbstractMasquerade masquerade, DataEntry<Byte> flagDataEntry, int position) {
+        super(masquerade, flagDataEntry);
         this.position = position;
-    }
-
-    @Override
-    public void setValue(Boolean value) {
-        dataEntry.setValue(setFlag(this.dataEntry.getValue(), position, value));
-        sendValue();
-    }
-
-    @Override
-    public Boolean getValue() {
-        return getFlag(this.dataEntry.getValue(), position);
     }
 
     @Override
     public DataEntry<Byte> handleOutgoingDataEntry(DataEntry<Byte> dataEntry) {
         if (dataEntry.getKey() != this.dataEntry.getKey()) return null;
-        if (overridesPlayerData) return null;
+        if (!allowValueChange) return null;
 
         boolean value = getFlag(dataEntry.getValue(), position);
         // if the value hasn't changed in comparison to the last outgoing EntityMetadata packet,
@@ -41,7 +31,7 @@ public class FlagEntityMetadata extends EntityMetadata<Byte, Boolean> {
         return this.dataEntry;
     }
 
-    private byte setFlag(byte value, int position, boolean flag) {
+    protected byte setFlag(byte value, int position, boolean flag) {
         if (flag) {
             return (byte) (value | 1 << position);
         } else {
@@ -49,7 +39,7 @@ public class FlagEntityMetadata extends EntityMetadata<Byte, Boolean> {
         }
     }
 
-    private boolean getFlag(byte value, int position) {
+    protected boolean getFlag(byte value, int position) {
         return (value & 1 << position) != 0;
     }
 

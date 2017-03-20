@@ -1,6 +1,5 @@
 package eu.crushedpixel.sponge.masquerade.api.masquerades;
 
-import eu.crushedpixel.sponge.masquerade.api.data.EntityMetadata;
 import eu.crushedpixel.sponge.masquerade.api.utils.PacketUtils;
 import eu.crushedpixel.sponge.packetgate.api.event.PacketEvent;
 import eu.crushedpixel.sponge.packetgate.api.listener.PacketListenerAdapter;
@@ -11,7 +10,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.attributes.IAttribute;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.datasync.EntityDataManager.DataEntry;
 import net.minecraft.network.play.server.SPacketAnimation;
 import net.minecraft.network.play.server.SPacketCustomPayload;
 import net.minecraft.network.play.server.SPacketEntityMetadata;
@@ -22,19 +20,18 @@ import org.spongepowered.api.Sponge;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Set;
 
 import static eu.crushedpixel.sponge.masquerade.api.utils.PacketUtils.rotationToByte;
 
 public class MasqueradePacketConnection extends PacketListenerAdapter {
 
-    private static final String UNREGISTER_CHANNEL = "Masquerade|unregister";
+    private static final String UNREGISTER_CHANNEL = "AbstractMasquerade|unregister";
 
-    private final Masquerade<?, ?> masquerade;
+    private final AbstractMasquerade<?> masquerade;
     private final PacketConnection connection;
 
-    public MasqueradePacketConnection(Masquerade<?, ?> masquerade, PacketConnection connection) {
+    public MasqueradePacketConnection(AbstractMasquerade<?> masquerade, PacketConnection connection) {
         this.masquerade = masquerade;
         this.connection = connection;
     }
@@ -133,31 +130,7 @@ public class MasqueradePacketConnection extends PacketListenerAdapter {
         SPacketEntityMetadata packet = PacketUtils.clonePacketEntityMetadata(packetEntityMetadata);
         packetEvent.setPacket(packet);
 
-        // check if the manipulators keys are valid for the fake entity's type
-        List<EntityMetadata> metadataEntries = masquerade.getDataManipulator().getAllEntries();
-
-        ListIterator<DataEntry<?>> it = packet.dataManagerEntries.listIterator();
-        while (it.hasNext()) {
-            DataEntry dataEntry = it.next();
-
-            boolean wasApplied = false;
-
-            for (EntityMetadata<?, ?> metadata : metadataEntries) {
-                DataEntry<?> handledEntry = metadata.handleOutgoingDataEntry(dataEntry);
-
-                if (handledEntry != null) {
-                    dataEntry = handledEntry;
-                    it.set(handledEntry);
-                    wasApplied = true;
-                }
-            }
-
-            // if the outgoing data entry wasn't applied to the Masquerade's data model,
-            // remove it from the packet
-            if (!wasApplied) {
-                it.remove();
-            }
-        }
+        masquerade.handlePacketEntityMetadata(packet);
 
         if (packet.dataManagerEntries.isEmpty()) {
             packetEvent.setCancelled(true);

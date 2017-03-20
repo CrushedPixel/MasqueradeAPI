@@ -1,12 +1,10 @@
 package eu.crushedpixel.sponge.masquerade.api.masquerades.impl;
 
 import eu.crushedpixel.sponge.masquerade.api.masquerades.ObjectMasquerade;
-import net.minecraft.entity.item.EntityMinecart;
+import org.spongepowered.api.entity.EntityTypes;
 import org.spongepowered.api.entity.living.player.Player;
 
 public class MinecartMasquerade extends ObjectMasquerade {
-
-    private static final int MINECART_ID = 10;
 
     public enum MinecartType {
 
@@ -24,7 +22,7 @@ public class MinecartMasquerade extends ObjectMasquerade {
     }
 
     public MinecartMasquerade(Player player, MinecartType minecartType) {
-        super(player, EntityMinecart.class, MINECART_ID, minecartType.getId());
+        super(player, EntityTypes.RIDEABLE_MINECART, minecartType.getId());
     }
 
 }

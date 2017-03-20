@@ -1,15 +1,16 @@
 package eu.crushedpixel.sponge.masquerade.api.masquerades;
 
-import eu.crushedpixel.sponge.masquerade.api.manipulators.EntityDataManipulator;
+import eu.crushedpixel.sponge.masquerade.api.utils.PacketUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.SPacketSpawnObject;
+import org.spongepowered.api.entity.EntityType;
 import org.spongepowered.api.entity.living.player.Player;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class ObjectMasquerade<E extends Entity> extends Masquerade<E, EntityDataManipulator<E>> {
+public class ObjectMasquerade<E extends Entity> extends MobMasquerade<E> {
 
     // the object type
     private final int objectType;
@@ -17,20 +18,16 @@ public abstract class ObjectMasquerade<E extends Entity> extends Masquerade<E, E
     // object data, for example Minecart type
     private final int objectData;
 
-    protected ObjectMasquerade(Player player, Class<? extends E> entityClass, int objectType) {
-        this(player, entityClass, objectType, 0);
+    protected ObjectMasquerade(Player player, EntityType entityType) {
+        this(player, entityType, 0);
     }
 
-    protected ObjectMasquerade(Player player, Class<? extends E> entityClass, int objectType, int objectData) {
-        super(player, entityClass);
-        this.objectType = objectType;
+    protected ObjectMasquerade(Player player, EntityType entityType, int objectData) {
+        super(player, entityType);
+        this.objectType = PacketUtils.getObjectID(entityType);
         this.objectData = objectData;
     }
 
-    @Override
-    protected EntityDataManipulator<E> createDataManipulator() {
-        return new EntityDataManipulator<>(this);
-    }
 
     @Override
     public List<Packet> createSpawnPackets(double posX, double posY, double posZ,
@@ -38,19 +35,9 @@ public abstract class ObjectMasquerade<E extends Entity> extends Masquerade<E, E
                                            short velX, short velY, short velZ) {
         List<Packet> packetList = new ArrayList<>();
 
-        SPacketSpawnObject packetSpawnObject = new SPacketSpawnObject();
-        packetSpawnObject.entityId = this.entityID;
-        packetSpawnObject.uniqueId = this.entityUUID;
-        packetSpawnObject.type = this.objectType;
-        packetSpawnObject.data = this.objectData;
-        packetSpawnObject.x = posX;
-        packetSpawnObject.y = posY;
-        packetSpawnObject.z = posZ;
-        packetSpawnObject.yaw = yaw;
-        packetSpawnObject.pitch = pitch;
-        packetSpawnObject.speedX = velX;
-        packetSpawnObject.speedY = velY;
-        packetSpawnObject.speedZ = velZ;
+        SPacketSpawnObject packetSpawnObject = PacketUtils.createPacketSpawnObject(
+                entityID, entityUUID, objectType, objectData,
+                posX, posY, posZ, yaw, pitch, velX, velY, velZ);
 
         packetList.add(packetSpawnObject);
         return packetList;

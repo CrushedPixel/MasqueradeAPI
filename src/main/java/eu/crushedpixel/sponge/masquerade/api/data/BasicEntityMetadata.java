@@ -1,23 +1,21 @@
 package eu.crushedpixel.sponge.masquerade.api.data;
 
-import eu.crushedpixel.sponge.masquerade.api.manipulators.DataManipulator;
+import eu.crushedpixel.sponge.masquerade.api.masquerades.AbstractMasquerade;
 import net.minecraft.network.datasync.DataParameter;
 
 public class BasicEntityMetadata<T> extends EntityMetadata<T, T> {
 
-    public BasicEntityMetadata(DataManipulator dataManipulator, DataParameter<T> key, T initialValue, String name) {
-        super(dataManipulator, key, initialValue, name);
+    public BasicEntityMetadata(AbstractMasquerade masquerade, DataParameter<T> parameter, T initialValue) {
+        super(masquerade, parameter, initialValue);
     }
 
     @Override
-    public void setValue(T value) {
-        dataEntry.setValue(value);
-        sendValue();
+    protected T convertToExternal(T value) {
+        return value;
     }
 
     @Override
-    public T getValue() {
-        return dataEntry.getValue();
+    protected T convertToInternal(T value) {
+        return value;
     }
-
 }
