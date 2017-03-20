@@ -248,6 +248,20 @@ public abstract class AbstractMasquerade<E extends Entity> implements Masquerade
         return metadata.keySet();
     }
 
+    @Override
+    public void setAllowValueChange(Key key, boolean allowValueChange) {
+        Preconditions.checkArgument(hasKey(key), "Unknown key for this masquerade type");
+        EntityMetadata<?, ?> entityMetadata = metadata.get(key);
+        entityMetadata.setAllowValueChange(allowValueChange);
+    }
+
+    @Override
+    public boolean allowsValueChange(Key key) {
+        Preconditions.checkArgument(hasKey(key), "Unknown key for this masquerade type");
+        EntityMetadata<?, ?> entityMetadata = metadata.get(key);
+        return entityMetadata.isAllowValueChange();
+    }
+
     UUID getPlayerUUID() {
         return playerUUID;
     }

@@ -31,4 +31,8 @@ public interface Masquerade {
 
     Collection<Key<?>> getKeys();
 
+    void setAllowValueChange(Key key, boolean allowValueChange);
+
+    boolean allowsValueChange(Key key);
+
 }

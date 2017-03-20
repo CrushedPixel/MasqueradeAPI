@@ -19,5 +19,4 @@ public class BooleanFlagEntityMetadata extends FlagEntityMetadata<Boolean> {
         return setFlag(this.dataEntry.getValue(), position, value);
     }
 
-
 }
