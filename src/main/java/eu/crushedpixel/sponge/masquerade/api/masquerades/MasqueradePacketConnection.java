@@ -26,7 +26,7 @@ import static eu.crushedpixel.sponge.masquerade.api.utils.PacketUtils.rotationTo
 
 public class MasqueradePacketConnection extends PacketListenerAdapter {
 
-    private static final String UNREGISTER_CHANNEL = "AbstractMasquerade|unregister";
+    private static final String UNREGISTER_CHANNEL = "Msqrd|unregister";
 
     private final AbstractMasquerade<?> masquerade;
     private final PacketConnection connection;
@@ -50,6 +50,7 @@ public class MasqueradePacketConnection extends PacketListenerAdapter {
                         SPacketSpawnPlayer.class,
                         SPacketEntityMetadata.class,
                         SPacketEntityProperties.class,
+                        SPacketAnimation.class,
                         SPacketCustomPayload.class);
     }
 
