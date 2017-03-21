@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import static eu.crushedpixel.sponge.masquerade.impl.utils.PacketUtils.rotationToByte;
 
@@ -30,10 +31,12 @@ public class MasqueradePacketConnection extends PacketListenerAdapter {
 
     private final AbstractMasquerade masquerade;
     private final PacketConnection connection;
+    private final UUID uuid;
 
     public MasqueradePacketConnection(AbstractMasquerade masquerade, PacketConnection connection) {
         this.masquerade = masquerade;
         this.connection = connection;
+        this.uuid = UUID.randomUUID();
     }
 
     /**
@@ -61,8 +64,10 @@ public class MasqueradePacketConnection extends PacketListenerAdapter {
      * the listener is unregistered.
      */
     public void unregister() {
-        SPacketCustomPayload packetCustomPayload = new SPacketCustomPayload(UNREGISTER_CHANNEL,
-                new PacketBuffer(Unpooled.buffer(0)));
+        PacketBuffer packetBuffer = new PacketBuffer(Unpooled.buffer(16));
+        packetBuffer.writeUniqueId(uuid);
+
+        SPacketCustomPayload packetCustomPayload = new SPacketCustomPayload(UNREGISTER_CHANNEL, packetBuffer);
 
         connection.sendPacket(packetCustomPayload);
     }
@@ -184,6 +189,10 @@ public class MasqueradePacketConnection extends PacketListenerAdapter {
 
     private void handlePacketCustomPayload(SPacketCustomPayload packetCustomPayload, PacketEvent packetEvent) {
         if (!UNREGISTER_CHANNEL.equals(packetCustomPayload.channel)) return;
+
+        UUID uuid = packetCustomPayload.data.readUniqueId();
+        if (!this.uuid.equals(uuid)) return;
+
         packetEvent.setCancelled(true);
 
         // unregister listener
