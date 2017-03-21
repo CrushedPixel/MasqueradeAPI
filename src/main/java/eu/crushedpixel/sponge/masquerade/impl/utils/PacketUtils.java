@@ -1,5 +1,6 @@
 package eu.crushedpixel.sponge.masquerade.impl.utils;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.network.datasync.EntityDataManager.DataEntry;
 import net.minecraft.network.play.server.SPacketEntityMetadata;
@@ -55,6 +56,10 @@ public class PacketUtils {
         packetSpawnMob.velocityY = velY;
         packetSpawnMob.velocityZ = velZ;
         packetSpawnMob.dataManager = new EntityDataManager(null);
+
+        // we need to set at least one key in the DataManager, otherwise the
+        // client will throw an NPE when trying to read from it.
+        packetSpawnMob.dataManager.register(Entity.FLAGS, (byte) 0);
 
         return packetSpawnMob;
     }
