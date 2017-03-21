@@ -1,7 +1,7 @@
-package eu.crushedpixel.sponge.masquerade.api.data;
+package eu.crushedpixel.sponge.masquerade.impl.data;
 
 import com.google.common.base.Preconditions;
-import eu.crushedpixel.sponge.masquerade.api.masquerades.AbstractMasquerade;
+import eu.crushedpixel.sponge.masquerade.impl.AbstractMasquerade;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.EntityDataManager.DataEntry;
 import net.minecraft.network.play.server.SPacketEntityMetadata;

@@ -1,10 +1,11 @@
-package eu.crushedpixel.sponge.masquerade.api.masquerades;
+package eu.crushedpixel.sponge.masquerade.impl.masquerades;
 
-import eu.crushedpixel.sponge.masquerade.api.data.BasicEntityMetadata;
-import eu.crushedpixel.sponge.masquerade.api.data.EntityMetadata;
-import eu.crushedpixel.sponge.masquerade.api.data.InvertedBooleanMetadata;
-import eu.crushedpixel.sponge.masquerade.api.data.flag.BooleanFlagEntityMetadata;
-import eu.crushedpixel.sponge.masquerade.api.utils.PacketUtils;
+import eu.crushedpixel.sponge.masquerade.impl.data.BasicEntityMetadata;
+import eu.crushedpixel.sponge.masquerade.impl.data.EntityMetadata;
+import eu.crushedpixel.sponge.masquerade.impl.data.InvertedBooleanMetadata;
+import eu.crushedpixel.sponge.masquerade.impl.data.flag.BooleanFlagEntityMetadata;
+import eu.crushedpixel.sponge.masquerade.impl.utils.PacketUtils;
+import eu.crushedpixel.sponge.masquerade.impl.AbstractMasquerade;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.network.Packet;
@@ -18,7 +19,7 @@ import org.spongepowered.api.text.Text;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MobMasquerade<E extends Entity> extends AbstractMasquerade<E> {
+public class MobMasquerade extends AbstractMasquerade {
 
     private static final int FLAG_ON_FIRE = 0;
     private static final int FLAG_SNEAKING = 1;
@@ -32,7 +33,7 @@ public class MobMasquerade<E extends Entity> extends AbstractMasquerade<E> {
     protected final int typeID;
 
     public MobMasquerade(Player player, EntityType entityType) {
-        super(player, (Class<? extends E>) entityType.getEntityClass());
+        super(player, entityType.getEntityClass());
 
         Integer typeID = EntityList.CLASS_TO_ID.get(entityType.getEntityClass());
         if (typeID == null) throw new IllegalArgumentException("Provided entity class could not be mapped to entity ID");

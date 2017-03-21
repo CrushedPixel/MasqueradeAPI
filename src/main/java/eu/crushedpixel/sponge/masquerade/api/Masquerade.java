@@ -1,4 +1,4 @@
-package eu.crushedpixel.sponge.masquerade.api.masquerades;
+package eu.crushedpixel.sponge.masquerade.api;
 
 import org.spongepowered.api.data.key.Key;
 import org.spongepowered.api.data.value.BaseValue;

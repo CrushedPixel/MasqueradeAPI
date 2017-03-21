@@ -1,6 +1,6 @@
-package eu.crushedpixel.sponge.masquerade.api.masquerades;
+package eu.crushedpixel.sponge.masquerade.impl;
 
-import eu.crushedpixel.sponge.masquerade.api.utils.PacketUtils;
+import eu.crushedpixel.sponge.masquerade.impl.utils.PacketUtils;
 import eu.crushedpixel.sponge.packetgate.api.event.PacketEvent;
 import eu.crushedpixel.sponge.packetgate.api.listener.PacketListenerAdapter;
 import eu.crushedpixel.sponge.packetgate.api.registry.PacketConnection;
@@ -22,16 +22,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import static eu.crushedpixel.sponge.masquerade.api.utils.PacketUtils.rotationToByte;
+import static eu.crushedpixel.sponge.masquerade.impl.utils.PacketUtils.rotationToByte;
 
 public class MasqueradePacketConnection extends PacketListenerAdapter {
 
     private static final String UNREGISTER_CHANNEL = "Msqrd|unregister";
 
-    private final AbstractMasquerade<?> masquerade;
+    private final AbstractMasquerade masquerade;
     private final PacketConnection connection;
 
-    public MasqueradePacketConnection(AbstractMasquerade<?> masquerade, PacketConnection connection) {
+    public MasqueradePacketConnection(AbstractMasquerade masquerade, PacketConnection connection) {
         this.masquerade = masquerade;
         this.connection = connection;
     }
@@ -144,6 +144,7 @@ public class MasqueradePacketConnection extends PacketListenerAdapter {
         // property packets are only accepted by the client for living entities
         if (!EntityLivingBase.class.isAssignableFrom(masquerade.getEntityClass())) {
             packetEvent.setCancelled(true);
+            return;
         }
 
         // player entities have attributes that other entity types may not have, for example luck.
@@ -176,9 +177,9 @@ public class MasqueradePacketConnection extends PacketListenerAdapter {
         if (packetAnimation.entityId != masquerade.getEntityID()) return;
 
         // the clients can't handle animation packets when the entity is not a subclass of EntityLivingBase.
-        if (EntityLivingBase.class.isAssignableFrom(masquerade.getEntityClass())) return;
-
-        packetEvent.setCancelled(true);
+        if (!EntityLivingBase.class.isAssignableFrom(masquerade.getEntityClass())) {
+            packetEvent.setCancelled(true);
+        }
     }
 
     private void handlePacketCustomPayload(SPacketCustomPayload packetCustomPayload, PacketEvent packetEvent) {

@@ -1,13 +1,13 @@
-package eu.crushedpixel.sponge.masquerade.api.masquerades;
+package eu.crushedpixel.sponge.masquerade.impl.masquerades;
 
-import eu.crushedpixel.sponge.masquerade.api.data.BasicEntityMetadata;
-import eu.crushedpixel.sponge.masquerade.api.data.EntityMetadata;
+import eu.crushedpixel.sponge.masquerade.impl.data.BasicEntityMetadata;
+import eu.crushedpixel.sponge.masquerade.impl.data.EntityMetadata;
 import net.minecraft.entity.EntityLivingBase;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.EntityType;
 import org.spongepowered.api.entity.living.player.Player;
 
-public class LivingMobMasquerade<E extends EntityLivingBase> extends MobMasquerade<E> {
+public class LivingMobMasquerade extends MobMasquerade {
 
     public LivingMobMasquerade(Player player, EntityType entityType) {
         super(player, entityType);
@@ -30,5 +30,7 @@ public class LivingMobMasquerade<E extends EntityLivingBase> extends MobMasquera
         });
 
         registerKey(Keys.STUCK_ARROWS, new BasicEntityMetadata<>(this, EntityLivingBase.ARROW_COUNT_IN_ENTITY, 0));
+
+        // TODO: register inventory keys that send and intercept Entity Equipment packets
     }
 }

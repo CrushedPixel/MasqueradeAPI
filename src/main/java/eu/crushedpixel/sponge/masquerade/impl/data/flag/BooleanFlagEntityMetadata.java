@@ -1,6 +1,6 @@
-package eu.crushedpixel.sponge.masquerade.api.data.flag;
+package eu.crushedpixel.sponge.masquerade.impl.data.flag;
 
-import eu.crushedpixel.sponge.masquerade.api.masquerades.AbstractMasquerade;
+import eu.crushedpixel.sponge.masquerade.impl.AbstractMasquerade;
 import net.minecraft.network.datasync.EntityDataManager;
 
 public class BooleanFlagEntityMetadata extends FlagEntityMetadata<Boolean> {

@@ -1,6 +1,6 @@
-package eu.crushedpixel.sponge.masquerade.api.data;
+package eu.crushedpixel.sponge.masquerade.impl.data;
 
-import eu.crushedpixel.sponge.masquerade.api.masquerades.AbstractMasquerade;
+import eu.crushedpixel.sponge.masquerade.impl.AbstractMasquerade;
 import net.minecraft.network.datasync.DataParameter;
 
 public class BasicEntityMetadata<T> extends EntityMetadata<T, T> {

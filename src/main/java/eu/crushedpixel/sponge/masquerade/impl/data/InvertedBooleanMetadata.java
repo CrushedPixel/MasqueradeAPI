@@ -1,10 +1,10 @@
-package eu.crushedpixel.sponge.masquerade.api.data;
+package eu.crushedpixel.sponge.masquerade.impl.data;
 
-import eu.crushedpixel.sponge.masquerade.api.masquerades.AbstractMasquerade;
+import eu.crushedpixel.sponge.masquerade.impl.AbstractMasquerade;
 import net.minecraft.network.datasync.DataParameter;
 
 /**
- * Boolean Metadata that has an inverted internal meaning than the Key suggests
+ * Boolean Metadata that has an inverted impl meaning than the Key suggests
  */
 public class InvertedBooleanMetadata extends BasicEntityMetadata<Boolean> {
 

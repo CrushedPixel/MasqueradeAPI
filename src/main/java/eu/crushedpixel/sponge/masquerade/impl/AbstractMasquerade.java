@@ -1,10 +1,10 @@
-package eu.crushedpixel.sponge.masquerade.api.masquerades;
+package eu.crushedpixel.sponge.masquerade.impl;
 
 import com.flowpowered.math.vector.Vector3d;
 import com.google.common.base.Preconditions;
-import eu.crushedpixel.sponge.masquerade.api.data.EntityMetadata;
+import eu.crushedpixel.sponge.masquerade.impl.data.EntityMetadata;
+import eu.crushedpixel.sponge.masquerade.api.Masquerade;
 import eu.crushedpixel.sponge.packetgate.api.registry.PacketGate;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.IAttribute;
@@ -32,10 +32,10 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static eu.crushedpixel.sponge.masquerade.api.utils.PacketUtils.rotationToByte;
-import static eu.crushedpixel.sponge.masquerade.api.utils.PacketUtils.velocityToShort;
+import static eu.crushedpixel.sponge.masquerade.impl.utils.PacketUtils.rotationToByte;
+import static eu.crushedpixel.sponge.masquerade.impl.utils.PacketUtils.velocityToShort;
 
-public abstract class AbstractMasquerade<E extends Entity> implements Masquerade {
+public abstract class AbstractMasquerade implements Masquerade {
 
     private final UUID playerUUID;
 
@@ -52,13 +52,13 @@ public abstract class AbstractMasquerade<E extends Entity> implements Masquerade
     // the fake entity uuid
     protected final UUID entityUUID = UUID.randomUUID();
 
-    private final Class<? extends E> entityClass;
+    private final Class entityClass;
 
     private final Set<IAttribute> validAttributes;
 
     private final Map<Key<?>, EntityMetadata<?, ?>> metadata = new HashMap<>();
 
-    public AbstractMasquerade(Player player, Class<? extends E> entityClass) {
+    public AbstractMasquerade(Player player, Class entityClass) {
         this.playerUUID = player.getUniqueId();
         this.entityID = ((EntityPlayer) player).getEntityId();
         this.entityClass = entityClass;
@@ -128,7 +128,7 @@ public abstract class AbstractMasquerade<E extends Entity> implements Masquerade
     }
 
     // override this to allow for more attributes for specific masquerades
-    protected Set<IAttribute> registerAttributes(Class<? extends Entity> entityClass) {
+    protected Set<IAttribute> registerAttributes(Class entityClass) {
         if (!EntityLivingBase.class.isAssignableFrom(entityClass)) {
             return Collections.emptySet();
         }
@@ -155,7 +155,7 @@ public abstract class AbstractMasquerade<E extends Entity> implements Masquerade
         );
     }
 
-    abstract List<Packet> createSpawnPackets(double posX, double posY, double posZ, byte yaw, byte pitch, byte headPitch, short velX, short velY, short velZ);
+    protected abstract List<Packet> createSpawnPackets(double posX, double posY, double posZ, byte yaw, byte pitch, byte headPitch, short velX, short velY, short velZ);
 
     void despawnEntity(MasqueradePacketConnection connection) {
         connection.sendPacket(new SPacketDestroyEntities(entityID));
@@ -274,7 +274,7 @@ public abstract class AbstractMasquerade<E extends Entity> implements Masquerade
         this.entityID = entityID;
     }
 
-    Class<? extends E> getEntityClass() {
+    Class getEntityClass() {
         return entityClass;
     }
 

@@ -1,7 +1,7 @@
-package eu.crushedpixel.sponge.masquerade.api.data.flag;
+package eu.crushedpixel.sponge.masquerade.impl.data.flag;
 
-import eu.crushedpixel.sponge.masquerade.api.data.EntityMetadata;
-import eu.crushedpixel.sponge.masquerade.api.masquerades.AbstractMasquerade;
+import eu.crushedpixel.sponge.masquerade.impl.data.EntityMetadata;
+import eu.crushedpixel.sponge.masquerade.impl.AbstractMasquerade;
 import net.minecraft.network.datasync.EntityDataManager.DataEntry;
 
 public abstract class FlagEntityMetadata<T> extends EntityMetadata<Byte, T> {

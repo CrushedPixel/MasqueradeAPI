@@ -1,7 +1,6 @@
-package eu.crushedpixel.sponge.masquerade.api.masquerades.impl;
+package eu.crushedpixel.sponge.masquerade.impl.masquerades;
 
-import eu.crushedpixel.sponge.masquerade.api.data.BasicEntityMetadata;
-import eu.crushedpixel.sponge.masquerade.api.masquerades.LivingMobMasquerade;
+import eu.crushedpixel.sponge.masquerade.impl.data.BasicEntityMetadata;
 import net.minecraft.entity.monster.EntityCreeper;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.EntityTypes;
