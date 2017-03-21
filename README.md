@@ -3,10 +3,10 @@ A disguise library for Sponge.
 
 ## Usage
 ### Masking a player
-To mask a player, create a new instance of `Masquerade` and show it to other players.  
+To mask a player, retrieve an instance of `Masquerade` and show it to other players.  
 For example, if you want to mask the Player as a Zombie and show the masquerade to all online players, do:
 ```java
-Masquerade masquerade = new MobMasquerade(player, EntityTypes.ZOMBIE);
+Masquerade masquerade = Masquerades.fromType(EntityTypes.ZOMBIE, player);
 
 for (Player p : Sponge.getServer().getOnlinePlayers()) {
     // do not show the masquerade to the masked player itself
