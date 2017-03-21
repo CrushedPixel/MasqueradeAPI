@@ -4,10 +4,7 @@
 *.iws
 .idea/
 
-#Gradle
-.gradletasknamecache
-.gradle/
-build/
-bin/
+#Maven
+target
 
 .DS_Store
