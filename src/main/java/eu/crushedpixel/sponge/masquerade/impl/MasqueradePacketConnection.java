@@ -190,7 +190,9 @@ public class MasqueradePacketConnection extends PacketListenerAdapter {
     private void handlePacketCustomPayload(SPacketCustomPayload packetCustomPayload, PacketEvent packetEvent) {
         if (!UNREGISTER_CHANNEL.equals(packetCustomPayload.channel)) return;
 
+        packetCustomPayload.data.markReaderIndex();
         UUID uuid = packetCustomPayload.data.readUniqueId();
+        packetCustomPayload.data.resetReaderIndex();
         if (!this.uuid.equals(uuid)) return;
 
         packetEvent.setCancelled(true);
