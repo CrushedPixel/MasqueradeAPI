@@ -69,11 +69,11 @@ masquerade.setData(Keys.CUSTOM_NAME_VISIBLE, true);
 Please note that some Keys may not be applicable to a certain `Masquerade` type or may not be implemented yet, in which case `setData` will throw an `IllegalArgumentException`.
 
 Some metadata fields are automatically modified by the server, 
-for example will the `Keys.IS_ABLAZE` be modified if the masked player walks through fire.  
+for example `Keys.IS_ABLAZE` will be modified if the masked player walks through fire.  
 You can easily disable this behaviour for each key separately:
 
 ```java
-manipulator.setAllowValueChange(Keys.IS_ABLAZE, false);
+masquerade.setValueChangeAllowed(Keys.IS_ABLAZE, false);
 ```
 
 Now, the entity will only appear in flames when asked for by the plugin, and otherwise retain the current state.
